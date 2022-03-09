@@ -5,15 +5,10 @@ import useStyles from './styles';
 import { ExpenseTrackerContext } from '../../../context/context';
 const List = () => {
     const classes = useStyles();
-    const globalVar = useContext(ExpenseTrackerContext);
-    console.log(globalVar, "checking values")
-    const transactions = [
-        {id: 2, type: "Income", category: "Salary", amount: 50, date: "Mar 08 2022"},
-        {id: 3, type: "Expense", category: "Salary", amount: 50, date: "Mar 09 2022"},
-        {id: 4, type: "Income", category: "Salary", amount: 50, date: "Mar 10 2022"}
-    ]
+    const {deleteTransaction, transactions} = useContext(ExpenseTrackerContext);
+    console.log(transactions, "checking values")
   return (
-    <MUIList dense={false} className={classes.list} >
+    <MUIList dense={false} className={classes.list}>
         {transactions.map((transaction) => (
             <Slide direction="down" in mountOnEnter unmountOnExit key={transaction.id}>
                 <ListItem>
@@ -24,7 +19,7 @@ const List = () => {
                 </ListItemAvatar>
                 <ListItemText primary={transaction.category} secondary={`$${transaction.amount} - ${transaction.date}`} />
                 <ListItemSecondaryAction>
-                    <IconButton edge="end" aria-label="delete"><Delete/></IconButton>
+                    <IconButton onClick={() => deleteTransaction(transaction.id)} edge="end" aria-label="delete"><Delete/></IconButton>
                 </ListItemSecondaryAction>
                 </ListItem>    
             </Slide>
