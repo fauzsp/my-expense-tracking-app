@@ -10,7 +10,6 @@ import {
 const useTransactions = (title) => {
   resetCategories();
   const { transactions } = useContext(ExpenseTrackerContext);
-  debugger;
   const rightTransactions = transactions.filter((t) => t.type === title);
   const total = rightTransactions.reduce(
     (acc, currVal) => (acc += currVal.amount),
