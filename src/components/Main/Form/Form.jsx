@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import {v4 as uuidv4} from "uuid";
 import { incomeCategories, expenseCategories } from '../../../contants/category';
 import {
@@ -13,12 +13,16 @@ import {
     Divider,
   } from "@material-ui/core";
 import useStyles from './styles';
+import { useSpeechContext } from '@speechly/react-client';
 import { ExpenseTrackerContext } from '../../../context/context';
 import fomatDate from '../../../utils/formatDate';
 const initialState = {amount: '', category: '', type: "Income", date: fomatDate(new Date())};
 
+
+
 const Form = () => {
     const classes = useStyles();
+    const {segment} = useSpeechContext();
     const [formData, setFormData] = useState(initialState);
     const {addTransaction} = useContext(ExpenseTrackerContext);
     const createTransaction = () => {
@@ -27,12 +31,14 @@ const Form = () => {
         setFormData(initialState)
     }
     const selectedCategory = formData.type === "Income" ? incomeCategories : expenseCategories;
+    useEffect(() => {
 
+    }, [])
     return (
     <Grid container spacing={2}>
         <Grid item xs={12}>
             <Typography align="center" varient="subtitle2" gutterButton>
-                ...    
+                {segment && segment.words.map((w) => w.value).join(" ")}    
             </Typography>    
         </Grid>
         <Grid item xs={6}>
