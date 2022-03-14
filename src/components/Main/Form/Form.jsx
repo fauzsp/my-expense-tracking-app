@@ -30,10 +30,44 @@ const Form = () => {
         addTransaction(transaction);
         setFormData(initialState)
     }
-    const selectedCategory = formData.type === "Income" ? incomeCategories : expenseCategories;
     useEffect(() => {
+        if(segment) {
+            if(segment.intent.intent === "add_expense") {
+                setFormData({...formData, type: "Expense"})
+            }
+            else if(segment.intent.intent === "add_income") {
+                setFormData({...formData, type: "Expense"})
+            }
+            else if(segment.isFinal && segment.intent.intent === "create_transaction") {
+                return createTransaction()
+            }
+            else if(segment.isFinal && segment.intent.intent === "cancel_transaction") {
+                return setFormData(initialState)
+            }
+            segment.entities.forEach((e) => {
+                console.log(formData, 'checking e')
+                const category = `${e.value.charAt(0)}${e.value.slice(1).toLocaleLowerCase()}`
+                switch(e.type) {
+                    case 'amount':
+                        setFormData({...formData, amount: e.value})
+                        break;
+                        case 'category':
+                        setFormData({...formData, category})
+                        break;
+                        case 'date':
+                        setFormData({...formData, date: e.value})
+                        break;
+                        default:
+                        break;
+                }
+            })
+            if (segment.isFinal && formData.amount && formData.category && formData.type && formData.date) {
+                createTransaction();
+              }
+        }
+    }, [segment])
+    const selectedCategory = formData.type === "Income" ? incomeCategories : expenseCategories;
 
-    }, [])
     return (
     <Grid container spacing={2}>
         <Grid item xs={12}>
