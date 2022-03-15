@@ -16,18 +16,22 @@ import useStyles from './styles';
 import { useSpeechContext } from '@speechly/react-client';
 import { ExpenseTrackerContext } from '../../../context/context';
 import fomatDate from '../../../utils/formatDate';
+import CustomizedSnackbar from '../../Snackbar/Snackbar';
 const initialState = {amount: '', category: '', type: "Income", date: fomatDate(new Date())};
 
 
 
 const Form = () => {
     const classes = useStyles();
+    const [open, setOpen] = useState(false);
     const {segment} = useSpeechContext();
     const [formData, setFormData] = useState(initialState);
     const {addTransaction} = useContext(ExpenseTrackerContext);
     const createTransaction = () => {
+        if(Number.isNaN(Number(formData.amount) || !formData.date.includes("-"))) return
         const transaction = {...formData, amount: Number(formData.amount), id: uuidv4()}
         addTransaction(transaction);
+        setOpen(true);
         setFormData(initialState)
     }
     useEffect(() => {
@@ -52,7 +56,12 @@ const Form = () => {
                         setFormData({...formData, amount: e.value})
                         break;
                         case 'category':
-                        setFormData({...formData, category})
+                            if(incomeCategories.map((e) => e.type).includes(category)) {
+                                 setFormData({...formData, type: "Income", category})
+                            }
+                            else if(expenseCategories.map((e) => e.type).includes(category)) {
+                                setFormData({...formData, type: "Expense", category})
+                           }
                         break;
                         case 'date':
                         setFormData({...formData, date: e.value})
@@ -62,6 +71,7 @@ const Form = () => {
                 }
             })
             if (segment.isFinal && formData.amount && formData.category && formData.type && formData.date) {
+                debugger;
                 createTransaction();
               }
         }
@@ -70,6 +80,7 @@ const Form = () => {
 
     return (
     <Grid container spacing={2}>
+        <CustomizedSnackbar open={open} setOpen={setOpen}></CustomizedSnackbar>
         <Grid item xs={12}>
             <Typography align="center" varient="subtitle2" gutterButton>
                 {segment && segment.words.map((w) => w.value).join(" ")}    

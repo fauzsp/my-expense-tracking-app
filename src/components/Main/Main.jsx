@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useContext} from "react";
 import {
   Card,
   CardHeader,
@@ -7,18 +7,19 @@ import {
   Grid,
   Divider,
 } from "@material-ui/core";
-
+import { ExpenseTrackerContext } from '../../context/context';
 import Form from "./Form/Form";
 import List from "./List/List";
 import useStyles from "./styles";
 const Main = () => {
   const classes = useStyles();
+  const {balance} = useContext(ExpenseTrackerContext)
   return (
     <Card className={classes.root}>
       <CardHeader title="My expense tracking" />
       <CardContent>
         <Typography varient="h5" align="center">
-          Total Balance $100
+          {`Total ${balance} $100`}
         </Typography>
         <Typography varient="subtitle" style={{lineHeight: '1.5em', marginTop: '20px'}}>
           Try saying Add income for $100 in category salary for Monday...
